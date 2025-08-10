@@ -2,6 +2,7 @@ package database
 
 import (
 	"alpha-core/internal/config"
+	"alpha-core/internal/model"
 	"alpha-core/pkg/logger"
 	"fmt"
 
@@ -25,7 +26,14 @@ func InitializeDatabase(configure *config.Config, log *logger.Logger) (*gorm.DB,
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	if err = database.AutoMigrate(); err != nil {
+	if err = database.AutoMigrate(
+		&model.User{},
+		&model.Role{},
+		&model.Permission{},
+		&model.RolePermission{},
+		&model.UserRole{},
+		&model.OAuthClient{},
+	); err != nil {
 		return nil, fmt.Errorf("failed to auto migrate: %w", err)
 	}
 

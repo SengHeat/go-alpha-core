@@ -4,7 +4,6 @@ import (
 	"alpha-core/internal/config"
 	"fmt"
 	"log"
-	"os"
 )
 
 const (
@@ -35,5 +34,4 @@ func (logger *Logger) WarningLog(format string, args ...interface{}) {
 func (logger *Logger) ErrorLog(format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
 	log.Println(string(Red) + "❌ [FAIL] : " + msg + string(Reset))
-	os.Exit(1)
 }

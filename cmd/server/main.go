@@ -3,8 +3,11 @@ package main
 import (
 	"alpha-core/internal/config"
 	"alpha-core/internal/database"
+	"alpha-core/internal/handler"
+	"alpha-core/internal/router"
 	"alpha-core/internal/utils"
 	"alpha-core/pkg/logger"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +20,7 @@ func main() {
 	log := logger.Init(configure)
 
 	//Step 3. initialize database connection
-	_, err := database.InitializeDatabase(configure, log)
+	gormDB, err := database.InitializeDatabase(configure, log)
 
 	if err != nil {
 		log.ErrorLog(err.Error())
@@ -25,13 +28,21 @@ func main() {
 
 	//Step 4. set up gin router
 	if utils.IsProduction(configure, log) {
-		log.InfoLog("Running in production mode")
 		gin.SetMode(gin.ReleaseMode)
 	}
 
 	//Step 5. initialize gin router
-	_ = gin.New()
+	routes := gin.New()
+	routes.Use(gin.Logger())
+	routes.Use(gin.Recovery())
 
-	//handler := Handle.N
+	handlerInstand := handler.NewHandler(gormDB, configure, log)
+	apiRoute := router.NewRouter(routes, handlerInstand)
 
+	port := configure.AppPort
+	address := fmt.Sprintf(":%s", port)
+
+	if err := apiRoute.Run(address); err != nil {
+		log.ErrorLog(err.Error())
+	}
 }
