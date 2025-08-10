@@ -21,7 +21,7 @@ func NewAPIUsers(router *gin.RouterGroup, authHandler *handler.AuthHandler, auth
 	// login and register without middleware
 	apiUsers.router.POST("/register", authHandler.Register)
 	apiUsers.router.POST("/login", authHandler.Login)
-	apiUsers.router.Use(middleware.Middleware([]string{"auth", "rate-limited"}, authMiddleWare)...).GET("/profile", authHandler.Profile)
+	apiUsers.router.Use(middleware.Middleware([]string{"auth", "cors", "rate-limited"}, authMiddleWare)...).OPTIONS("/profile", authHandler.Profile)
 
 	return apiUsers
 }

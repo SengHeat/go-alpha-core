@@ -13,11 +13,11 @@ type Router struct {
 
 func NewRouter(router *gin.Engine, authHandler *handler.AuthHandler, authMiddleware *middleware.JWTMiddleware) *gin.Engine {
 
-	api := router.Group("/api")
-	api.PUT("/update", func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "This is a PUT request!"})
+	router.NoMethod(func(c *gin.Context) {
+		c.JSON(405, gin.H{"error": "Method not allowed"})
 	})
 
+	api := router.Group("/api")
 	NewAPIUsers(api, authHandler, authMiddleware)
 
 	return router

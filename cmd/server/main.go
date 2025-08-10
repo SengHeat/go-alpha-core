@@ -35,7 +35,6 @@ func main() {
 	//Step 5. initialize gin router
 	routes := gin.New()
 	routes.Use(gin.Logger())
-	routes.Use(gin.Recovery())
 
 	handlerInstand := handler.NewHandler(gormDB, configure, log)
 	authMiddleware := middleware.NewJWTMiddleware(configure, log)

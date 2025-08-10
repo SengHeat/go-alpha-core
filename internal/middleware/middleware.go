@@ -30,6 +30,10 @@ func Middleware(middlewares []string, authMiddleWare *JWTMiddleware) []gin.Handl
 			handlers = append(handlers, AuthorizationMiddleware(roles...))
 		case "rate-limited":
 			handlers = append(handlers, RateLimitMiddleware())
+		case "cors":
+			handlers = append(handlers, CORSMiddleware())
+		case "recovery":
+			handlers = append(handlers, gin.Recovery())
 		default:
 			fmt.Printf("Unknown middleware: %s, skipping\n", name)
 		}
