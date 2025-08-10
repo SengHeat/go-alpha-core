@@ -24,16 +24,16 @@ func Init(configure *config.Config) *Logger {
 
 func (logger *Logger) InfoLog(format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
-	log.Println(string(Green) + "[INFO] : " + msg + string(Reset))
+	log.Println(string(Green) + "✅ [INFO] : " + msg + string(Reset))
 }
 
 func (logger *Logger) WarningLog(format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
-	log.Println(string(Yellow) + "[WARN] : " + msg + string(Reset))
+	log.Println(string(Yellow) + "⚠️ [WARN] : " + msg + string(Reset))
 }
 
 func (logger *Logger) ErrorLog(format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
-	log.Println(string(Red) + "[FAIL] : " + msg + string(Reset))
+	log.Println(string(Red) + "❌ [FAIL] : " + msg + string(Reset))
 	os.Exit(1)
 }
