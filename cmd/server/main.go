@@ -4,6 +4,7 @@ import (
 	"alpha-core/internal/config"
 	"alpha-core/internal/database"
 	"alpha-core/internal/handler"
+	"alpha-core/internal/middleware"
 	"alpha-core/internal/router"
 	"alpha-core/internal/utils"
 	"alpha-core/pkg/logger"
@@ -37,7 +38,8 @@ func main() {
 	routes.Use(gin.Recovery())
 
 	handlerInstand := handler.NewHandler(gormDB, configure, log)
-	apiRoute := router.NewRouter(routes, handlerInstand)
+	authMiddleware := middleware.NewJWTMiddleware(configure, log)
+	apiRoute := router.NewRouter(routes, handlerInstand, authMiddleware)
 
 	port := configure.AppPort
 	address := fmt.Sprintf(":%s", port)

@@ -6,6 +6,7 @@ import (
 	"alpha-core/internal/service"
 	"alpha-core/pkg/logger"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -92,4 +93,44 @@ func (handler *AuthHandler) Login(context *gin.Context) {
 	}
 	context.JSON(http.StatusOK, gin.H{"user": user, "token": token})
 
+}
+
+func (handler *AuthHandler) Profile(context *gin.Context) {
+	validUser, exists := context.Get("sub")
+
+	if !exists {
+		context.JSON(http.StatusUnauthorized, gin.H{"error": "missing subject",
+			"message": validUser})
+		return
+	}
+
+	uid := uint(0)
+
+	switch t := validUser.(type) {
+	case float64:
+		uid = uint(t)
+	case int:
+		uid = uint(t)
+	case uint:
+		uid = t
+	case string:
+		if n, err := strconv.Atoi(t); err == nil {
+			uid = uint(n)
+		}
+	}
+
+	user, err := handler.repository.FindById(uid)
+
+	if err != nil || user == nil {
+		context.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"data": user,
+	})
+}
+
+func (handler *AuthHandler) AdminOnly(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "welcome admin"})
 }

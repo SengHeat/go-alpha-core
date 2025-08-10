@@ -29,6 +29,18 @@ func (repository *UserRepository) FindByEmail(email string) (*model.User, error)
 	return &user, err
 }
 
+func (repository *UserRepository) FindById(id uint) (*model.User, error) {
+	var user model.User
+
+	err := repository.database.Preload("Roles.Permissions").First(&user, id).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return &user, err
+}
+
 func (repository *UserRepository) Create(user *model.User) error {
 	return repository.database.Create(user).Error
 }

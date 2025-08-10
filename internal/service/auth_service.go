@@ -93,7 +93,8 @@ func (service *AuthService) GenerateJWT(user *model.User) (string, error) {
 		}
 	}
 
-	cliams := jwt.MapClaims{
+	claims := jwt.MapClaims{
+		"sub":         user.ID,
 		"email":       user.Email,
 		"name":        user.Name,
 		"roles":       roles,
@@ -102,6 +103,6 @@ func (service *AuthService) GenerateJWT(user *model.User) (string, error) {
 		"iat":         time.Now().Unix(),
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, cliams)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(service.configure.JWTSecret))
 }
